@@ -383,7 +383,7 @@ const LoanCalculator = () => {
               <CardHeader>
                 <CardTitle>Password</CardTitle>
                 <CardDescription>
-                  Change your password here. After saving, you'll be logged out.
+                  Change your password here. After saving, you&apos;ll be logged out.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
@@ -406,7 +406,7 @@ const LoanCalculator = () => {
               <CardHeader>
                 <CardTitle>Password</CardTitle>
                 <CardDescription>
-                  Change your password here. After saving, you'll be logged out.
+                  Change your password here. After saving, you&apos;ll be logged out.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">

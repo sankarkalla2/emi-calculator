@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { useReactToPrint } from "react-to-print";
 import {
   Card,
   CardContent,
@@ -18,28 +19,60 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+interface ScheduleEntry {
+  totalPrincipalPaid: number;
+  totalInterestPaid: number;
+  totalPayment: number;
+  balance: number;
+  loanPaidPercentage: number;
+}
+
+interface YearlyScheduleEntry extends ScheduleEntry {
+  year: number;
+}
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Home, Percent, Users } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Home, Percent, Printer, Share2, Users } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
 import { BiRupee } from "react-icons/bi";
 import { FaCar } from "react-icons/fa";
 
-import { Doughnut } from "react-chartjs-2";
+import { Doughnut, Chart as ChartJSComponent } from "react-chartjs-2";
+
 import {
   Chart as ChartJS,
   ArcElement,
   Tooltip,
   Legend,
   Title,
-  AnimationOptions,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  LineElement,
+  PointElement,
   ChartOptions,
-  Plugin,
 } from "chart.js";
-ChartJS.register(ArcElement, Tooltip, Legend, Title);
+// Register Chart.js components
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  Title,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  LineElement,
+  PointElement
+);
 
 const LoanCalculator = () => {
+  const componentRef = useRef(null);
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: "Print this  document",
+  });
   const [pricipleAmount, setPrinipleAmount] = useState("500000");
   const [interest, setInterest] = useState("9");
   const [tenture, setTenture] = useState("10");
@@ -47,16 +80,7 @@ const LoanCalculator = () => {
   const [emi, setEmi] = useState("");
   const [totalInterest, setTotalInterest] = useState("");
   const [totalAmount, setTotalAmout] = useState("");
-  const [emiSchedule, setEmiSchedule] = useState<
-    Array<{
-      year: number;
-      principalPaid: number;
-      interestPaid: number;
-      totalPayment: number;
-      balance: number;
-      loanPaidPercentage: number;
-    }>
-  >([]);
+  const [emiSchedule, setEmiSchedule] = useState<YearlyScheduleEntry[]>([]);
 
   const data = {
     labels: ["Principal", "Total Interest"],
@@ -89,23 +113,64 @@ const LoanCalculator = () => {
     },
   };
 
-  const textCenterPlugin: Plugin<"doughnut"> = {
-    id: "textCenterPlugin",
-    beforeDraw: (chart) => {
-      const { ctx, width, height } = chart;
+  // Bar and line chart data for EMI schedule
+  const barData = {
+    labels: emiSchedule.map((schedule) => schedule.year.toString()),
+    datasets: [
+      {
+        type: "bar" as const,
+        label: "Total Principal Paid",
+        backgroundColor: "#42A5F5",
+        data: emiSchedule.map((schedule) => schedule.totalPrincipalPaid),
+      },
+      {
+        type: "bar" as const,
+        label: "Total Interest Paid",
+        backgroundColor: "#FFA726",
+        data: emiSchedule.map((schedule) => schedule.totalInterestPaid),
+      },
+      {
+        type: "bar" as const,
+        label: "Total Payment",
+        backgroundColor: "#66BB6A",
+        data: emiSchedule.map((schedule) => schedule.totalPayment),
+      },
+      {
+        type: "line" as const,
+        label: "Remaining Balance",
+        backgroundColor: "rgba(75,192,192,0.4)",
+        borderColor: "rgba(75,192,192,1)",
+        data: emiSchedule.map((schedule) => schedule.balance),
+        fill: false,
+        lineTension: 0.1,
+      },
+    ],
+  };
 
-      ctx.save();
-      ctx.font = "bold 12px Arial";
-
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(
-        `Total: ${parseFloat(totalAmount).toFixed(2)}`,
-        width / 2,
-        height / 2 + 30
-      );
-
-      ctx.restore();
+  const barOptions: ChartOptions<"bar"> = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      title: {
+        display: true,
+        text: "EMI Schedule",
+      },
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: "Year",
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: "Amount (USD)",
+        },
+      },
     },
   };
 
@@ -134,48 +199,44 @@ const LoanCalculator = () => {
 
     // Calculate EMI schedule starting from current month
     const currentDate = new Date();
-    const currentMonth = currentDate.getMonth();
+    const currentMonth = currentDate.getMonth(); // June is month 5 (0-indexed)
     const currentYear = currentDate.getFullYear();
 
-    const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-
     let remainingPrincipal = P;
-    const schedule = [];
+    const yearlySchedule: Record<number, ScheduleEntry> = {};
+
     for (let i = 0; i < n; i++) {
       const interestForMonth = remainingPrincipal * r;
       const principalForMonth = emiValue - interestForMonth;
       remainingPrincipal -= principalForMonth;
 
       const year = currentYear + Math.floor((currentMonth + i) / 12);
-      const month = months[(currentMonth + i) % 12];
 
-      const totalPaymentForMonth = interestForMonth + principalForMonth;
-      const loanPaidPercentage = ((P - remainingPrincipal) / P) * 100;
+      if (!yearlySchedule[year]) {
+        yearlySchedule[year] = {
+          totalPrincipalPaid: 0,
+          totalInterestPaid: 0,
+          totalPayment: 0,
+          balance: 0,
+          loanPaidPercentage: 0,
+        };
+      }
 
-
-      schedule.push({
-        year,
-        month,
-        principalPaid: principalForMonth,
-        interestPaid: interestForMonth,
-        totalPayment: totalPaymentForMonth,
-        balance: remainingPrincipal,
-        loanPaidPercentage,
-      });
+      yearlySchedule[year].totalPrincipalPaid += principalForMonth;
+      yearlySchedule[year].totalInterestPaid += interestForMonth;
+      yearlySchedule[year].totalPayment += emiValue;
+      yearlySchedule[year].balance = remainingPrincipal;
+      yearlySchedule[year].loanPaidPercentage =
+        ((P - remainingPrincipal) / P) * 100;
     }
+
+    const schedule: YearlyScheduleEntry[] = Object.keys(yearlySchedule).map(
+      (year) => ({
+        year: parseInt(year),
+        ...yearlySchedule[parseInt(year)],
+      })
+    );
+
     setEmiSchedule(schedule);
   }, [pricipleAmount, interest, tenture]);
 
@@ -185,7 +246,7 @@ const LoanCalculator = () => {
         <h1 className="text-2xl lg:text-3xl font-semibold pt-20 pb-10">
           Loan Calculator
         </h1>
-        <Tabs defaultValue="home" className="space-y-5">
+        <Tabs defaultValue="home" className="space-y-5" ref={componentRef}>
           <TabsList className="grid w-[450px] grid-cols-3">
             <TabsTrigger
               value="home"
@@ -383,7 +444,8 @@ const LoanCalculator = () => {
               <CardHeader>
                 <CardTitle>Password</CardTitle>
                 <CardDescription>
-                  Change your password here. After saving, you&apos;ll be logged out.
+                  Change your password here. After saving, you&apos;ll be logged
+                  out.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
@@ -406,7 +468,8 @@ const LoanCalculator = () => {
               <CardHeader>
                 <CardTitle>Password</CardTitle>
                 <CardDescription>
-                  Change your password here. After saving, you&apos;ll be logged out.
+                  Change your password here. After saving, you&apos;ll be logged
+                  out.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
@@ -427,16 +490,19 @@ const LoanCalculator = () => {
         </Tabs>
       </section>
 
-      <section className="pt-10">
-        <table className="min-w-full bg-white border">
-          <thead>
-            <tr>
-              <th className="py-2 px-4 border-b">Year</th>
-              <th className="py-2 px-4 border-b">Priciple Piad</th>
-              <th className="py-2 px-4 border-b">Interest Paid</th>
-              <th className="py-2 px-4 border-b">Total Payment</th>
-              <th className="py-2 px-4 border-b">Balance</th>
-              <th className="py-2 px-4 border-b">Loan Paid</th>
+      <Card className="overflow-x-auto mt-10">
+        <div className="mt-6">
+          <ChartJSComponent type="bar" data={barData} options={barOptions} />
+        </div>
+        <table className="min-w-full table table-xs p-2" ref={componentRef}>
+          <thead className=" text-muted-foreground">
+            <tr className="text-center">
+              <th className="py-3">Year</th>
+              <th className="py-3">Priciple Piad</th>
+              <th className="py-3">Interest Paid</th>
+              <th className="py-3">Total Payment</th>
+              <th className="py-3">Balance</th>
+              <th className="py-3">Loan Paid</th>
             </tr>
           </thead>
           <tbody>
@@ -446,10 +512,10 @@ const LoanCalculator = () => {
                   {schedule.year}
                 </td>
                 <td className="py-2 px-4 border-b text-center">
-                  {schedule.principalPaid.toFixed(2)}
+                  {schedule.totalPrincipalPaid.toFixed(2)}
                 </td>
                 <td className="py-2 px-4 border-b text-center">
-                  {schedule.interestPaid.toFixed(2)}
+                  {schedule.totalInterestPaid.toFixed(2)}
                 </td>
                 <td className="py-2 px-4 border-b text-center">
                   {schedule.totalPayment.toFixed(2)}
@@ -464,7 +530,22 @@ const LoanCalculator = () => {
             ))}
           </tbody>
         </table>
-      </section>
+
+        <div className="p-4 flex w-full items-center justify-center gap-x-3">
+          <Button
+            className=""
+            variant={"print_home_table"}
+            onClick={handlePrint}
+          >
+            <Printer className="h-4 w-4 mr-1" />
+            Print
+          </Button>
+          <Button>
+            <Share2 className="h-4 w-4 mr-1" />
+            Share
+          </Button>
+        </div>
+      </Card>
     </main>
   );
 };

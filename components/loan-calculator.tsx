@@ -1,252 +1,22 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { useReactToPrint } from "react-to-print";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-interface ScheduleEntry {
-  totalPrincipalPaid: number;
-  totalInterestPaid: number;
-  totalPayment: number;
-  balance: number;
-  loanPaidPercentage: number;
-}
-
-interface YearlyScheduleEntry extends ScheduleEntry {
-  year: number;
-}
-
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Home, Percent, Printer, Share2, Users } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
-import { BiRupee } from "react-icons/bi";
+"use client"
+import { Home, Users } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { FaCar } from "react-icons/fa";
-
-import { Doughnut, Chart as ChartJSComponent } from "react-chartjs-2";
-
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-  Title,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  LineElement,
-  PointElement,
-  ChartOptions,
-} from "chart.js";
-// Register Chart.js components
-ChartJS.register(
-  ArcElement,
-  Tooltip,
-  Legend,
-  Title,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  LineElement,
-  PointElement
-);
+import Homeloan from "./home-loan";
+import { BlockMath, InlineMath } from "react-katex";
+import "katex/dist/katex.min.css";
+import Link from "next/link";
+import ImportantLinks from "./important-links";
+const EMIFORMULA = "E = P . r . (1 + r ) ^ n / ((1 + r)^n - 1 )";
 
 const LoanCalculator = () => {
-  const componentRef = useRef(null);
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-    documentTitle: "Print this  document",
-  });
-  const [pricipleAmount, setPrinipleAmount] = useState("500000");
-  const [interest, setInterest] = useState("9");
-  const [tenture, setTenture] = useState("10");
-  const [tentureType, setTentureType] = useState<"Yr" | "Mo">("Yr");
-  const [emi, setEmi] = useState("");
-  const [totalInterest, setTotalInterest] = useState("");
-  const [totalAmount, setTotalAmout] = useState("");
-  const [emiSchedule, setEmiSchedule] = useState<YearlyScheduleEntry[]>([]);
-
-  const data = {
-    labels: ["Principal", "Total Interest"],
-    datasets: [
-      {
-        label: "Amount in Rs",
-        data: [parseFloat(pricipleAmount as string) || 0, totalInterest || 0],
-        backgroundColor: ["#42A5F5", "#FFA726"],
-        hoverOffset: 4,
-      },
-    ],
-  };
-
-  const options: ChartOptions<"doughnut"> = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top" as const, // Ensure the position is one of the allowed string literals
-      },
-      title: {
-        display: true,
-        text: "Loan Breakdown",
-      },
-    },
-    animation: {
-      animateRotate: true,
-      animateScale: true,
-      duration: 2000, // Duration of the animation in milliseconds
-      easing: "easeInOutBounce", // Easing function for the animation
-    },
-  };
-
-  // Bar and line chart data for EMI schedule
-  const barData = {
-    labels: emiSchedule.map((schedule) => schedule.year.toString()),
-    datasets: [
-      {
-        type: "bar" as const,
-        label: "Total Principal Paid",
-        backgroundColor: "#42A5F5",
-        data: emiSchedule.map((schedule) => schedule.totalPrincipalPaid),
-      },
-      {
-        type: "bar" as const,
-        label: "Total Interest Paid",
-        backgroundColor: "#FFA726",
-        data: emiSchedule.map((schedule) => schedule.totalInterestPaid),
-      },
-      {
-        type: "bar" as const,
-        label: "Total Payment",
-        backgroundColor: "#66BB6A",
-        data: emiSchedule.map((schedule) => schedule.totalPayment),
-      },
-      {
-        type: "line" as const,
-        label: "Remaining Balance",
-        backgroundColor: "rgba(75,192,192,0.4)",
-        borderColor: "rgba(75,192,192,1)",
-        data: emiSchedule.map((schedule) => schedule.balance),
-        fill: false,
-        lineTension: 0.1,
-      },
-    ],
-  };
-
-  const barOptions: ChartOptions<"bar"> = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
-      },
-      title: {
-        display: true,
-        text: "EMI Schedule",
-      },
-    },
-    scales: {
-      x: {
-        title: {
-          display: true,
-          text: "Year",
-        },
-      },
-      y: {
-        title: {
-          display: true,
-          text: "Amount (USD)",
-        },
-      },
-    },
-  };
-
-  useEffect(() => {
-    //calculate loan amount
-
-    const P = parseFloat(pricipleAmount);
-    const annulRate = parseFloat(interest);
-    const n = tentureType === "Yr" ? parseInt(tenture) * 12 : parseInt(tenture);
-
-    if (isNaN(P) || isNaN(annulRate) || isNaN(n)) {
-      alert("please enter valid details");
-      return;
-    }
-
-    const r = annulRate / (12 * 100); // Convert annual rate to monthly and percentage to decimal
-
-    const emiValue = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
-    setEmi(emiValue.toFixed(2));
-
-    const totalAmountPayable = emiValue * n;
-    setTotalAmout(totalAmountPayable.toString());
-
-    const totalInterestPayable = totalAmountPayable - P;
-    setTotalInterest(totalInterestPayable.toFixed(2));
-
-    // Calculate EMI schedule starting from current month
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth(); // June is month 5 (0-indexed)
-    const currentYear = currentDate.getFullYear();
-
-    let remainingPrincipal = P;
-    const yearlySchedule: Record<number, ScheduleEntry> = {};
-
-    for (let i = 0; i < n; i++) {
-      const interestForMonth = remainingPrincipal * r;
-      const principalForMonth = emiValue - interestForMonth;
-      remainingPrincipal -= principalForMonth;
-
-      const year = currentYear + Math.floor((currentMonth + i) / 12);
-
-      if (!yearlySchedule[year]) {
-        yearlySchedule[year] = {
-          totalPrincipalPaid: 0,
-          totalInterestPaid: 0,
-          totalPayment: 0,
-          balance: 0,
-          loanPaidPercentage: 0,
-        };
-      }
-
-      yearlySchedule[year].totalPrincipalPaid += principalForMonth;
-      yearlySchedule[year].totalInterestPaid += interestForMonth;
-      yearlySchedule[year].totalPayment += emiValue;
-      yearlySchedule[year].balance = remainingPrincipal;
-      yearlySchedule[year].loanPaidPercentage =
-        ((P - remainingPrincipal) / P) * 100;
-    }
-
-    const schedule: YearlyScheduleEntry[] = Object.keys(yearlySchedule).map(
-      (year) => ({
-        year: parseInt(year),
-        ...yearlySchedule[parseInt(year)],
-      })
-    );
-
-    setEmiSchedule(schedule);
-  }, [pricipleAmount, interest, tenture]);
-
   return (
     <main>
       <section>
         <h1 className="text-2xl lg:text-3xl font-semibold pt-20 pb-10">
           Loan Calculator
         </h1>
-        <Tabs defaultValue="home" className="space-y-5" ref={componentRef}>
+        <Tabs defaultValue="home" className="space-y-5">
           <TabsList className="grid w-[450px] grid-cols-3">
             <TabsTrigger
               value="home"
@@ -264,288 +34,178 @@ const LoanCalculator = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="home" className="w-full">
-            <Card className="lg:grid lg:grid-cols-10 flex flex-col">
-              <div className="col-span-6">
-                <CardHeader className="gap-0 py-0 pt-5">
-                  <div className="flex flex-row items-center justify-between">
-                    <CardDescription className="text-sm font-semibold text-muted-foreground pb-0">
-                      Home Loan Amout
-                    </CardDescription>
-                    <div className="border-b-2 flex items-center">
-                      <span>
-                        <BiRupee className="h-5 w-5 mr-0" />
-                      </span>
-                      <Input
-                        className="w-[150px] outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0"
-                        type="number"
-                        min={5000}
-                        defaultValue={50000}
-                        placeholder="Enter Your Loan"
-                        value={pricipleAmount}
-                        onChange={(e) => {
-                          setPrinipleAmount(e.target.value);
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="pt-0">
-                    <input
-                      type="range"
-                      min="0"
-                      max="20000000"
-                      value={pricipleAmount}
-                      onChange={(e) => {
-                        setPrinipleAmount(e.target.value);
-                      }}
-                      className="h-1 w-full"
-                    />
-                    {/* <input type="range" min={0} max="100" value="40" className="range range-xs h-[0.3rem] [--range-shdw:blue]" />  */}
-                  </div>
-                </CardHeader>
-                <CardHeader className="gap-0 py-3">
-                  <div className="flex flex-row items-center justify-between">
-                    <CardDescription className="text-sm text-muted-foreground font-bold">
-                      Interest Rate
-                    </CardDescription>
-                    <div className=" flex items-center">
-                      <span>
-                        <Percent className="h-5 w-5 mr-0" />
-                      </span>
-                      <Input
-                        className="w-[70px] border-0 border-b-2 py-0  outline-none focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none placeholder:text-xs"
-                        type="number"
-                        min={1}
-                        defaultValue={interest}
-                        value={interest}
-                        placeholder="Enter"
-                        onChange={(e) => {
-                          setInterest(e.target.value);
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="">
-                    <input
-                      type="range"
-                      min="0"
-                      max="20"
-                      className="h-1 w-full"
-                      onChange={(e) => {
-                        setInterest(e.target.value);
-                      }}
-                    />
-                  </div>
-                </CardHeader>
-                <CardHeader className="py-0">
-                  <div className="flex flex-row items-center justify-between">
-                    <CardDescription className="text-sm font-semibold text-muted-foreground">
-                      Loan Tenture
-                    </CardDescription>
-                    <div className="flex items-center">
-                      <div className="w-[90px]">
-                        <Select
-                          defaultValue="years"
-                          onValueChange={(e: "years" | "months") => {
-                            if (tentureType === "Yr" && e === "months") {
-                              setTenture(
-                                (Number(tenture) * 12).toFixed(1).toString()
-                              );
-                              setTentureType("Mo");
-                            } else if (tentureType == "Mo" && e === "years") {
-                              setTenture(
-                                (Number(tenture) / 12).toFixed(10).toString()
-                              );
-                              setTentureType("Yr");
-                            }
-                          }}
-                        >
-                          <SelectTrigger className="text-foreground">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="years">Years</SelectItem>
-                            <SelectItem value="months">Months</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <Input
-                        className="w-[100px] border-0 border-b-2 py-0  outline-none focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none placeholder:text-xs"
-                        type="number"
-                        min={1}
-                        defaultValue={tenture}
-                        value={tenture}
-                        placeholder="Enter Tenture"
-                        onChange={(e) => {
-                          setTenture(e.target.value);
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="">
-                    <input
-                      type="range"
-                      min="0"
-                      max={tentureType == "Yr" ? "30" : "360"}
-                      className="h-1 w-full"
-                      onChange={(e) => {
-                        setTenture(e.target.value);
-                      }}
-                      value={tenture}
-                    />
-                  </div>
-                </CardHeader>
-
-                <div className="pt-7 p-5 flex justify-between text-3xl">
-                  <div className="font-bold">EMI</div>
-                  <div className="text-[#6200ea] font-bold flex items-center">
-                    <BiRupee />
-                    {emi}
-                  </div>
-                </div>
-              </div>
-              <div className="divider lg:divider-horizontal col-span-0"></div>
-              <div className="md:col-span-2">
-                <CardHeader className="flex items-center justify-center">
-                  <div className="sm:w-full lg:w-[300px]">
-                    <Doughnut data={data} options={options} />
-                    <div>
-                      <div className="px-10 text-xs pt-2 flex items gap-x-5 font-medium justify-center items-center">
-                        <div className="flex flex-row items-center gap-x-1">
-                          <div className="h-3 w-3 rounded-full border-1 bg-[#42A5F5]"></div>
-                          <div className="text-muted-foreground">
-                            Principle Amount
-                          </div>
-                        </div>
-                        <span className="text-sm font-semibold">
-                          {pricipleAmount}
-                        </span>
-                      </div>
-
-                      <div className="px-10 text-xs pt-2 flex items gap-x-5 font-medium justify-center items-center">
-                        <div className="flex flex-row items-center gap-x-1">
-                          <div className="h-3 w-3 rounded-full border-1 bg-[#FFA726]"></div>
-                          <div className="text-muted-foreground">
-                            Total Interest
-                          </div>
-                        </div>
-                        <span className="text-sm font-semibold">
-                          {totalInterest}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </CardHeader>
-              </div>
-            </Card>
+            <Homeloan loanType="Home Loan" />
           </TabsContent>
           <TabsContent value="personal">
-            <Card>
-              <CardHeader>
-                <CardTitle>Password</CardTitle>
-                <CardDescription>
-                  Change your password here. After saving, you&apos;ll be logged
-                  out.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="space-y-1">
-                  <Label htmlFor="current">Current password</Label>
-                  <Input id="current" type="password" />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="new">New password</Label>
-                  <Input id="new" type="password" />
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button>Save password</Button>
-              </CardFooter>
-            </Card>
+            <Homeloan loanType="Personal Loan" />
           </TabsContent>
           <TabsContent value="vechile">
-            <Card>
-              <CardHeader>
-                <CardTitle>Password</CardTitle>
-                <CardDescription>
-                  Change your password here. After saving, you&apos;ll be logged
-                  out.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="space-y-1">
-                  <Label htmlFor="current">Current password</Label>
-                  <Input id="current" type="password" />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="new">New password</Label>
-                  <Input id="new" type="password" />
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button>Save password</Button>
-              </CardFooter>
-            </Card>
+            <Homeloan loanType="Vechile Loan" />
           </TabsContent>
         </Tabs>
       </section>
+      <section>
+        <div className="mt-10">
+          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+            What is EMI?
+          </h1>
+          <p className="leading-7 [&:not(:first-child)]:mt-6">
+            Equated Monthly Installment - EMI for short - is the amount payable
+            every month to the bank or any other financial institution until the
+            loan amount is fully paid off. It consists of the interest on loan
+            as well as part of the principal amount to be repaid. The sum of
+            principal amount and interest is divided by the tenure, i.e., number
+            of months, in which the loan has to be repaid. This amount has to be
+            paid monthly. The interest component of the EMI would be larger
+            during the initial months and gradually reduce with each payment.
+            The exact percentage allocated towards payment of the principal
+            depends on the interest rate. Even though your monthly EMI payment
+            won't change, the proportion of principal and interest components
+            will change with time. With each successive payment, you'll pay more
+            towards the principal and less in interest.
+          </p>
+          <div className="mt-4">
+            <p className="leading-7 [&:not(:first-child)]:mt-6">
+              Here's the formula to calculate EMI:
+            </p>
+            <h2 className="text-4xl">
+              <div>
+                <BlockMath math={EMIFORMULA} />
+              </div>
+            </h2>
+            <div className="space-y-2 leading-7">
+              <p>where</p>
+              <p>
+                <b>E</b> is EMI
+              </p>
+              <p>
+                <b>r</b> is rate of interest calculated on monthly basis. (i.e.,
+                r = Rate of Annual interest/12/100. If rate of interest is 10.5%
+                per annum, then r = 10.5/12/100=0.00875)
+              </p>
+              <p>
+                <b>n</b> is loan term / tenure / duration in number of months
+              </p>
+            </div>
+          </div>
 
-      <Card className="overflow-x-auto mt-10">
-        <div className="mt-6">
-          <ChartJSComponent type="bar" data={barData} options={barOptions} />
-        </div>
-        <table className="min-w-full table table-xs p-2" ref={componentRef}>
-          <thead className=" text-muted-foreground">
-            <tr className="text-center">
-              <th className="py-3">Year</th>
-              <th className="py-3">Priciple Piad</th>
-              <th className="py-3">Interest Paid</th>
-              <th className="py-3">Total Payment</th>
-              <th className="py-3">Balance</th>
-              <th className="py-3">Loan Paid</th>
-            </tr>
-          </thead>
-          <tbody>
-            {emiSchedule.map((schedule) => (
-              <tr key={schedule.year}>
-                <td className="py-2 px-4 border-b text-center">
-                  {schedule.year}
-                </td>
-                <td className="py-2 px-4 border-b text-center">
-                  {schedule.totalPrincipalPaid.toFixed(2)}
-                </td>
-                <td className="py-2 px-4 border-b text-center">
-                  {schedule.totalInterestPaid.toFixed(2)}
-                </td>
-                <td className="py-2 px-4 border-b text-center">
-                  {schedule.totalPayment.toFixed(2)}
-                </td>
-                <td className="py-2 px-4 border-b text-center">
-                  {schedule.balance.toFixed(2)}
-                </td>
-                <td className="py-2 px-4 border-b text-center">
-                  {schedule.loanPaidPercentage.toFixed(2)}%
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+          <blockquote className="mt-6 border-l-2 pl-6 italic">
+            For example, if you borrow ₹10,00,000 from the bank at 10.5% annual
+            interest for a period of 10 years (i.e., 120 months), then EMI =
+            ₹10,00,000 * 0.00875 * (1 + 0.00875)120 / ((1 + 0.00875)120 - 1) =
+            ₹13,493. i.e., you will have to pay ₹13,493 for 120 months to repay
+            the entire loan amount. The total amount payable will be ₹13,493 *
+            120 = ₹16,19,220 that includes ₹6,19,220 as interest toward the
+            loan.
+          </blockquote>
+          <p className="leading-7 [&:not(:first-child)]:mt-6">
+            Computing EMI for different combinations of principal loan amount,
+            interest rates and loan term using the above EMI formula by hand or
+            MS Excel is time consuming, complex and error prone. Our EMI
+            calculator automates this calculation for you and gives you the
+            result in a split second along with visual charts displaying payment
+            schedule and the break-up of total payment.
+          </p>
+          <h2 className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+            How to Use EMI Calculator?
+          </h2>
 
-        <div className="p-4 flex w-full items-center justify-center gap-x-3">
-          <Button
-            className=""
-            variant={"print_home_table"}
-            onClick={handlePrint}
-          >
-            <Printer className="h-4 w-4 mr-1" />
-            Print
-          </Button>
-          <Button>
-            <Share2 className="h-4 w-4 mr-1" />
-            Share
-          </Button>
+          <p className="leading-7 [&:not(:first-child)]:mt-6">
+            With colourful charts and instant results, our EMI Calculator is
+            easy to use, intuitive to understand and is quick to perform. You
+            can calculate EMI for home loan, car loan, personal loan, education
+            loan or any other fully amortizing loan using this calculator.
+          </p>
+          <div className="mt-5">
+            <p>Enter the following information in the EMI Calculator:</p>
+            <ul className="my3 ml-6 list-disc [&>li]:mt-2">
+              <li>1st level of puns: 5 gold coins</li>
+              <li>2nd level of jokes: 10 gold coins</li>
+              <li>3rd level of one-liners : 20 gold coins</li>
+            </ul>
+            <p className="leading-7 [&:not(:first-child)]:mt-6">
+              Use the slider to adjust the values in the EMI calculator form. If
+              you need to enter more precise values, you can type the values
+              directly in the relevant boxes provided above. As soon as the
+              values are changed using the slider (or hit the 'tab' key after
+              entering the values directly in the input fields), EMI calculator
+              will re-calculate your monthly payment (EMI) amount.
+            </p>
+            <p className="leading-7 [&:not(:first-child)]:mt-6">
+              A pie chart depicting the break-up of total payment (i.e., total
+              principal vs. total interest payable) is also displayed. It
+              displays the percentage of total interest versus principal amount
+              in the sum total of all payments made against the loan. The
+              payment schedule table showing payments made every month / year
+              for the entire loan duration is displayed along with a chart
+              showing interest and principal components paid each year. A
+              portion of each payment is for the interest while the remaining
+              amount is applied towards the principal balance. During initial
+              loan period, a large portion of each payment is devoted to
+              interest. With passage of time, larger portions pay down the
+              principal. The payment schedule also shows the intermediate
+              outstanding balance for each year which will be carried over to
+              the next year.
+            </p>
+            <p>
+              Want to make part prepayments to shorten your home loan schedule
+              and reduce your total interest outgo? Use our{" "}
+              <Link href={"#"} className="hover:underline text-blue-500">
+                {" "}
+                Home Loan EMI Calculator with Prepayments
+              </Link>
+              . If you wish to calculate how much loan you can afford OR
+              determine advertised vs actual loan interest rate (along with loan
+              APR) on a purchase, use our loan calculator.
+            </p>
+          </div>
+          <div>
+            <h3 className="mt-8 scroll-m-20 text-2xl font-semibold tracking-tight">
+              Floating Rate EMI Calculation
+            </h3>
+            <p className="leading-7 [&:not(:first-child)]:mt-6">
+              We suggest that you calculate floating / variable rate EMI by
+              taking into consideration two opposite scenarios, i.e., optimistic
+              (deflationary) and pessimistic (inflationary) scenario. Loan
+              amount and loan tenure, two components required to calculate the
+              EMI are under your control; i.e., you are going to decide how much
+              loan you have to borrow and how long your loan tenure should be.
+              But interest rate is decided by the banks & HFCs based on rates
+              and policies set by RBI. As a borrower, you should consider the
+              two extreme possibilities of increase and decrease in the rate of
+              interest and calculate your EMI under these two conditions. Such
+              calculation will help you decide how much EMI is affordable, how
+              long your loan tenure should be and how much you should borrow.
+            </p>
+            <p className="leading-7 [&:not(:first-child)]:mt-6">
+              Optimistic (deflationary) scenario: Assume that the rate of
+              interest comes down by 1% - 3% from the present rate. Consider
+              this situation and calculate your EMI. In this situation, your EMI
+              will come down or you may opt to shorten the loan tenure. Ex: If
+              you avail home loan to purchase a house as an investment, then
+              optimistic scenario enables you to compare this with other
+              investment opportunities.
+            </p>
+            <p className="leading-7 [&:not(:first-child)]:mt-6">
+              Pessimistic (inflationary) scenario: In the same way, assume that
+              the rate of interest is hiked by 1% - 3%. Is it possible for you
+              to continue to pay the EMI without much struggle? Even a 2%
+              increase in rate of interest can result in significant rise in
+              your monthly payment for the entire loan tenure.
+            </p>
+            <p className="leading-7 [&:not(:first-child)]:mt-6">
+              Such calculation helps you to plan for such future possibilities.
+              When you take a loan, you are making a financial commitment for
+              next few months, years or decades. So consider the best as well as
+              worst cases...and be ready for both. In short, hope for the best
+              but be prepared for the worst!
+            </p>
+          </div>
+          <div>
+            <ImportantLinks />
+          </div>
         </div>
-      </Card>
+      </section>
     </main>
   );
 };

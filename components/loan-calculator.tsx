@@ -66,7 +66,7 @@ const LoanCalculator = () => {
           </p>
           <div className="mt-4">
             <p className="leading-7 [&:not(:first-child)]:mt-6">
-              Here's the formula to calculate EMI:
+              Here&apos;s the formula to calculate EMI:
             </p>
             <h2 className="text-4xl">
               <div>

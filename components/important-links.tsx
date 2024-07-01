@@ -24,7 +24,7 @@ export default function ImportantLinks() {
             <CardTitle className="text-xl">HOME LOAN CALCULATOR</CardTitle>
           </CardHeader>
         </Link>
-        <CardContent className="flex items-center justify-center">
+        <CardContent className="flex items-center justify-center w-full text-center">
           <div className="text-xs text-muted-foreground">
             Home Loan EMI Calculator with Prepayments, Taxes & Insurance
           </div>
@@ -62,7 +62,7 @@ export default function ImportantLinks() {
             <CardTitle className="text-xl">HOME LOAN CALCULATOR</CardTitle>
           </CardHeader>
         </Link>
-        <CardContent className="flex items-center justify-center">
+        <CardContent className="flex items-center justify-center w-full text-center">
           <div className="text-xs text-muted-foreground">
             Loan Calculator — Calculate EMI, Affordability, Tenure & Interest
             Rate

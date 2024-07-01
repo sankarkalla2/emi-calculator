@@ -60,8 +60,8 @@ const LoanCalculator = () => {
             during the initial months and gradually reduce with each payment.
             The exact percentage allocated towards payment of the principal
             depends on the interest rate. Even though your monthly EMI payment
-            won't change, the proportion of principal and interest components
-            will change with time. With each successive payment, you'll pay more
+            won&apos;t change, the proportion of principal and interest components
+            will change with time. With each successive payment, you&&apos;ll pay more
             towards the principal and less in interest.
           </p>
           <div className="mt-4">
@@ -127,7 +127,7 @@ const LoanCalculator = () => {
               Use the slider to adjust the values in the EMI calculator form. If
               you need to enter more precise values, you can type the values
               directly in the relevant boxes provided above. As soon as the
-              values are changed using the slider (or hit the 'tab' key after
+              values are changed using the slider (or hit the &apos;tab&apos; key after
               entering the values directly in the input fields), EMI calculator
               will re-calculate your monthly payment (EMI) amount.
             </p>

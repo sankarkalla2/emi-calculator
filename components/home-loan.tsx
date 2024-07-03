@@ -38,35 +38,36 @@ import { Home, Percent, Printer, Share2, Users } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { BiRupee } from "react-icons/bi";
 import { FaCar } from "react-icons/fa";
-
-import { Doughnut, Chart as ChartJSComponent } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-  Title,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  LineElement,
-  PointElement,
-  ChartOptions,
-} from "chart.js";
 import { cn } from "@/lib/utils";
 
+// import { Doughnut, Chart as ChartJSComponent } from "react-chartjs-2";
+// import {
+//   Chart as ChartJS,
+//   ArcElement,
+//   Tooltip,
+//   Legend,
+//   Title,
+//   BarElement,
+//   CategoryScale,
+//   LinearScale,
+//   LineElement,
+//   PointElement,
+//   ChartOptions,
+// } from "chart.js";
+// import { cn } from "@/lib/utils";
+
 // Register Chart.js components
-ChartJS.register(
-  ArcElement,
-  Tooltip,
-  Legend,
-  Title,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  LineElement,
-  PointElement
-);
+// ChartJS.register(
+//   ArcElement,
+//   Tooltip,
+//   Legend,
+//   Title,
+//   BarElement,
+//   CategoryScale,
+//   LinearScale,
+//   LineElement,
+//   PointElement
+// );
 
 interface HomeLoanProps {
   loanType: "Personal Loan" | "Home Loan" | "Vechile Loan";
@@ -92,86 +93,86 @@ const Homeloan = ({ loanType }: HomeLoanProps) => {
       : loanType === "Personal Loan"
       ? "#ff3d00"
       : "#00695c";
-  const data = {
-    labels: ["Principal", "Total Interest"],
-    datasets: [
-      {
-        label: "Amount in Rs",
-        data: [parseFloat(pricipleAmount as string) || 0, totalInterest || 0],
-        backgroundColor: ["#42A5F5", "#FFA726"],
-        hoverOffset: 4,
-      },
-    ],
-  };
+  // const data = {
+  //   labels: ["Principal", "Total Interest"],
+  //   datasets: [
+  //     {
+  //       label: "Amount in Rs",
+  //       data: [parseFloat(pricipleAmount as string) || 0, totalInterest || 0],
+  //       backgroundColor: ["#42A5F5", "#FFA726"],
+  //       hoverOffset: 4,
+  //     },
+  //   ],
+  // };
 
-  const options: ChartOptions<"doughnut"> = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top" as const, // Ensure the position is one of the allowed string literals
-      },
-      title: {
-        display: true,
-        text: "Loan Breakdown",
-      },
-    },
-    animation: {
-      animateRotate: true,
-      animateScale: true,
-      duration: 2000, // Duration of the animation in milliseconds
-      easing: "easeInOutBounce", // Easing function for the animation
-    },
-  };
+  // const options: ChartOptions<"doughnut"> = {
+  //   responsive: true,
+  //   plugins: {
+  //     legend: {
+  //       position: "top" as const, // Ensure the position is one of the allowed string literals
+  //     },
+  //     title: {
+  //       display: true,
+  //       text: "Loan Breakdown",
+  //     },
+  //   },
+  //   animation: {
+  //     animateRotate: true,
+  //     animateScale: true,
+  //     duration: 2000, // Duration of the animation in milliseconds
+  //     easing: "easeInOutBounce", // Easing function for the animation
+  //   },
+  // };
 
-  // Bar and line chart data for EMI schedule
-  const barData = {
-    labels: emiSchedule.map((schedule) => schedule.year.toString()),
-    datasets: [
-      {
-        type: "bar" as const,
-        label: "Total Principal Paid",
-        backgroundColor: "#42A5F5",
-        data: emiSchedule.map((schedule) => schedule.totalPrincipalPaid),
-        stack: "combined",
-      },
-      {
-        type: "bar" as const,
-        label: "Total Interest Paid",
-        backgroundColor: "#FFA726",
-        data: emiSchedule.map((schedule) => schedule.totalInterestPaid),
-        stack: "combined",
-      },
-    ],
-  };
+  // // Bar and line chart data for EMI schedule
+  // const barData = {
+  //   labels: emiSchedule.map((schedule) => schedule.year.toString()),
+  //   datasets: [
+  //     {
+  //       type: "bar" as const,
+  //       label: "Total Principal Paid",
+  //       backgroundColor: "#42A5F5",
+  //       data: emiSchedule.map((schedule) => schedule.totalPrincipalPaid),
+  //       stack: "combined",
+  //     },
+  //     {
+  //       type: "bar" as const,
+  //       label: "Total Interest Paid",
+  //       backgroundColor: "#FFA726",
+  //       data: emiSchedule.map((schedule) => schedule.totalInterestPaid),
+  //       stack: "combined",
+  //     },
+  //   ],
+  // };
 
-  const barOptions: ChartOptions<"bar"> = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
-      },
-      title: {
-        display: true,
-        text: "EMI Schedule",
-      },
-    },
-    scales: {
-      x: {
-        stacked: true,
-        title: {
-          display: true,
-          text: "Year",
-        },
-      },
-      y: {
-        stacked: true,
-        title: {
-          display: true,
-          text: "Amount (INR)",
-        },
-      },
-    },
-  };
+  // const barOptions: ChartOptions<"bar"> = {
+  //   responsive: true,
+  //   plugins: {
+  //     legend: {
+  //       position: "top",
+  //     },
+  //     title: {
+  //       display: true,
+  //       text: "EMI Schedule",
+  //     },
+  //   },
+  //   scales: {
+  //     x: {
+  //       stacked: true,
+  //       title: {
+  //         display: true,
+  //         text: "Year",
+  //       },
+  //     },
+  //     y: {
+  //       stacked: true,
+  //       title: {
+  //         display: true,
+  //         text: "Amount (INR)",
+  //       },
+  //     },
+  //   },
+  // };
 
   useEffect(() => {
     //calculate loan amount
@@ -389,7 +390,7 @@ const Homeloan = ({ loanType }: HomeLoanProps) => {
         <div className="md:col-span-2">
           <CardHeader className="flex items-center justify-center">
             <div className="sm:w-full lg:w-[300px]">
-              <Doughnut data={data} options={options} />
+              {/* <Doughnut data={data} options={options} /> */}
               <div>
                 <div className="px-10 text-xs pt-2 flex items gap-x-5 font-medium justify-center items-center">
                   <div className="flex flex-row items-center gap-x-1">
@@ -418,7 +419,7 @@ const Homeloan = ({ loanType }: HomeLoanProps) => {
       <Card className="overflow-x-auto mt-10">
         <div ref={componentRef}>
           <div className="mt-6">
-            <ChartJSComponent type="bar" data={barData} options={barOptions} />
+            {/* <ChartJSComponent type="bar" data={barData} options={barOptions} /> */}
           </div>
           <table className="min-w-full table table-xs p-2 mt-10">
             <thead className=" text-muted-foreground">

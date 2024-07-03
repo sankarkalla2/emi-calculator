@@ -52,7 +52,6 @@ import {
   LinearScale,
   LineElement,
   PointElement,
-  Plugin,
   ChartOptions,
 } from "chart.js";
 // import { cn } from "@/lib/utils";
@@ -392,7 +391,7 @@ const Homeloan = ({ loanType }: HomeLoanProps) => {
         <div className="md:col-span-2">
           <CardHeader className="flex items-center justify-center">
             <div className="sm:w-full lg:w-[300px]">
-              <Doughnut data={data} options={options} />
+              {/* <Doughnut data={data} options={options} /> */}
               <div>
                 <div className="px-10 text-xs pt-2 flex items gap-x-5 font-medium justify-center items-center">
                   <div className="flex flex-row items-center gap-x-1">
@@ -421,7 +420,7 @@ const Homeloan = ({ loanType }: HomeLoanProps) => {
       <Card className="overflow-x-auto mt-10">
         <div ref={componentRef}>
           <div className="mt-6">
-            <ChartJSComponent type="bar" data={barData} options={barOptions} />
+            {/* <ChartJSComponent type="bar" data={barData} options={barOptions} /> */}
           </div>
           <table className="min-w-full table table-xs p-2 mt-10">
             <thead className=" text-muted-foreground">

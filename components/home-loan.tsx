@@ -53,6 +53,7 @@ import {
   LineElement,
   PointElement,
   ChartOptions,
+  registerables
 } from "chart.js";
 // import { cn } from "@/lib/utils";
 
@@ -67,7 +68,8 @@ ChartJS.register(
   CategoryScale,
   LinearScale,
   LineElement,
-  PointElement
+  PointElement,
+  ...registerables
 );
 
 interface HomeLoanProps {

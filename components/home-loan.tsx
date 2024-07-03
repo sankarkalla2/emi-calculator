@@ -40,20 +40,20 @@ import { BiRupee } from "react-icons/bi";
 import { FaCar } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 
-// import { Doughnut, Chart as ChartJSComponent } from "react-chartjs-2";
-// import {
-//   Chart as ChartJS,
-//   ArcElement,
-//   Tooltip,
-//   Legend,
-//   Title,
-//   BarElement,
-//   CategoryScale,
-//   LinearScale,
-//   LineElement,
-//   PointElement,
-//   ChartOptions,
-// } from "chart.js";
+import { Doughnut, Chart as ChartJSComponent } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  Title,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  LineElement,
+  PointElement,
+  ChartOptions,
+} from "chart.js";
 // import { cn } from "@/lib/utils";
 
 // Register Chart.js components
@@ -105,24 +105,24 @@ const Homeloan = ({ loanType }: HomeLoanProps) => {
   //   ],
   // };
 
-  // const options: ChartOptions<"doughnut"> = {
-  //   responsive: true,
-  //   plugins: {
-  //     legend: {
-  //       position: "top" as const, // Ensure the position is one of the allowed string literals
-  //     },
-  //     title: {
-  //       display: true,
-  //       text: "Loan Breakdown",
-  //     },
-  //   },
-  //   animation: {
-  //     animateRotate: true,
-  //     animateScale: true,
-  //     duration: 2000, // Duration of the animation in milliseconds
-  //     easing: "easeInOutBounce", // Easing function for the animation
-  //   },
-  // };
+  const options: ChartOptions<"doughnut"> = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top" as const, // Ensure the position is one of the allowed string literals
+      },
+      title: {
+        display: true,
+        text: "Loan Breakdown",
+      },
+    },
+    animation: {
+      animateRotate: true,
+      animateScale: true,
+      duration: 2000, // Duration of the animation in milliseconds
+      easing: "easeInOutBounce", // Easing function for the animation
+    },
+  };
 
   // // Bar and line chart data for EMI schedule
   // const barData = {

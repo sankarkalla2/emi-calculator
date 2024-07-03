@@ -34,7 +34,7 @@ const LoanCalculator = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="home" className="w-full">
-            <Homeloan loanType="Home Loan" />
+            {/* <Homeloan loanType="Home Loan" /> */}
           </TabsContent>
           <TabsContent value="personal">
             {/* <Homeloan loanType="Personal Loan" /> */}

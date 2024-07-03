@@ -390,7 +390,7 @@ const Homeloan = ({ loanType }: HomeLoanProps) => {
         <div className="md:col-span-2">
           <CardHeader className="flex items-center justify-center">
             <div className="sm:w-full lg:w-[300px]">
-              {/* <Doughnut data={data} options={options} /> */}
+              <Doughnut data={data} options={options} />
               <div>
                 <div className="px-10 text-xs pt-2 flex items gap-x-5 font-medium justify-center items-center">
                   <div className="flex flex-row items-center gap-x-1">

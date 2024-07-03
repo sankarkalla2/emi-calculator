@@ -39,8 +39,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { BiRupee } from "react-icons/bi";
 import { FaCar } from "react-icons/fa";
 import { cn } from "@/lib/utils";
-
 import { Doughnut, Chart as ChartJSComponent } from "react-chartjs-2";
+
 import {
   Chart as ChartJS,
   ArcElement,
@@ -52,11 +52,13 @@ import {
   LinearScale,
   LineElement,
   PointElement,
+  Plugin,
   ChartOptions,
 } from "chart.js";
 // import { cn } from "@/lib/utils";
 
 // Register Chart.js components
+
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -97,7 +99,7 @@ const Homeloan = ({ loanType }: HomeLoanProps) => {
     labels: ["Principal", "Total Interest"],
     datasets: [
       {
-        label: "Amount in Rs",
+        label: "Amount in USD",
         data: [parseFloat(pricipleAmount as string) || 0, totalInterest || 0],
         backgroundColor: ["#42A5F5", "#FFA726"],
         hoverOffset: 4,
@@ -109,7 +111,7 @@ const Homeloan = ({ loanType }: HomeLoanProps) => {
     responsive: true,
     plugins: {
       legend: {
-        position: "top" as const, // Ensure the position is one of the allowed string literals
+        position: "top",
       },
       title: {
         display: true,
@@ -124,7 +126,7 @@ const Homeloan = ({ loanType }: HomeLoanProps) => {
     },
   };
 
-  // // Bar and line chart data for EMI schedule
+  // Bar and line chart data for EMI schedule
   const barData = {
     labels: emiSchedule.map((schedule) => schedule.year.toString()),
     datasets: [
@@ -168,7 +170,7 @@ const Homeloan = ({ loanType }: HomeLoanProps) => {
         stacked: true,
         title: {
           display: true,
-          text: "Amount (INR)",
+          text: "Amount (USD)",
         },
       },
     },
@@ -390,7 +392,7 @@ const Homeloan = ({ loanType }: HomeLoanProps) => {
         <div className="md:col-span-2">
           <CardHeader className="flex items-center justify-center">
             <div className="sm:w-full lg:w-[300px]">
-              {/* <Doughnut data={data} options={options} /> */}
+              <Doughnut data={data} options={options} />
               <div>
                 <div className="px-10 text-xs pt-2 flex items gap-x-5 font-medium justify-center items-center">
                   <div className="flex flex-row items-center gap-x-1">

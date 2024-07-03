@@ -13,7 +13,7 @@ export default function Home() {
       "
       >
         <div className="max-w-5xl mx-auto p-4 md:px-20 lg:px-4">
-          {/* <LoanCalculator /> */}
+          <LoanCalculator />
         </div>
       </div>
     </main>

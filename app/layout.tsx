@@ -22,16 +22,7 @@ export default function RootLayout({
       <Head>
         <link rel="icon" href="/logoipsum-332.svg" type="image/x-icon" />
       </Head>
-      <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }

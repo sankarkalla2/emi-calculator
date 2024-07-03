@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Home, Users } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { FaCar } from "react-icons/fa";
@@ -20,15 +20,15 @@ const LoanCalculator = () => {
           <TabsList className="grid w-[450px] grid-cols-3">
             <TabsTrigger
               value="home"
-              className="flex items-center justify-center sm:text-xs"
+              className="flex items-center justify-center text-xs md:text-sm"
             >
               <Home className="h-5 w-5 mr-1 text-[#6200ea]" /> Home Loan
             </TabsTrigger>
-            <TabsTrigger value="personal" className="flex items-center">
+            <TabsTrigger value="personal" className="flex items-center text-xs md:text-sm">
               <Users className="h-5 w-5 mr-1 text-[#ff3d00]" />
               Personal Loan
             </TabsTrigger>
-            <TabsTrigger value="vechile" className="flex items-center">
+            <TabsTrigger value="vechile" className="flex items-center text-xs md:text-sm">
               <FaCar className="text-[#00695c] w-5 h-5 mr-1" />
               Vechile Loan
             </TabsTrigger>
@@ -37,10 +37,10 @@ const LoanCalculator = () => {
             <Homeloan loanType="Home Loan" />
           </TabsContent>
           <TabsContent value="personal">
-            {/* <Homeloan loanType="Personal Loan" /> */}
+            <Homeloan loanType="Personal Loan" />
           </TabsContent>
           <TabsContent value="vechile">
-            {/* <Homeloan loanType="Vechile Loan" /> */}
+            <Homeloan loanType="Vechile Loan" />
           </TabsContent>
         </Tabs>
       </section>
@@ -60,9 +60,9 @@ const LoanCalculator = () => {
             during the initial months and gradually reduce with each payment.
             The exact percentage allocated towards payment of the principal
             depends on the interest rate. Even though your monthly EMI payment
-            won&apos;t change, the proportion of principal and interest components
-            will change with time. With each successive payment, you&&apos;ll pay more
-            towards the principal and less in interest.
+            won&apos;t change, the proportion of principal and interest
+            components will change with time. With each successive payment,
+            you&&apos;ll pay more towards the principal and less in interest.
           </p>
           <div className="mt-4">
             <p className="leading-7 [&:not(:first-child)]:mt-6">
@@ -127,9 +127,9 @@ const LoanCalculator = () => {
               Use the slider to adjust the values in the EMI calculator form. If
               you need to enter more precise values, you can type the values
               directly in the relevant boxes provided above. As soon as the
-              values are changed using the slider (or hit the &apos;tab&apos; key after
-              entering the values directly in the input fields), EMI calculator
-              will re-calculate your monthly payment (EMI) amount.
+              values are changed using the slider (or hit the &apos;tab&apos;
+              key after entering the values directly in the input fields), EMI
+              calculator will re-calculate your monthly payment (EMI) amount.
             </p>
             <p className="leading-7 [&:not(:first-child)]:mt-6">
               A pie chart depicting the break-up of total payment (i.e., total

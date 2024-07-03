@@ -1,5 +1,3 @@
-
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,26 +12,6 @@ import Link from "next/link";
 import { BiCalculator } from "react-icons/bi";
 import { FaAndroid } from "react-icons/fa";
 
-import { Chart, ArcElement, Tooltip, Legend, Title } from "chart.js";
-import { Doughnut } from "react-chartjs-2";
-
-Chart.register(ArcElement, Tooltip, Legend, Title);
-Chart.defaults.plugins.tooltip.backgroundColor = "rgb(0, 0, 156)";
-Chart.defaults.plugins.legend.position = "right";
-Chart.defaults.plugins.legend.title.display = true;
-Chart.defaults.plugins.legend.title.text = "60 of 100 Done";
-
-const data = {
-  labels: ["processed", "pending"],
-  datasets: [
-    {
-      data: [60, 40],
-      backgroundColor: ["rgb(0, 197, 0)", "rgb(204, 223, 243)"],
-      borderWidth: 2,
-      radius: "40%",
-    },
-  ],
-};
 export default function ImportantLinks() {
   return (
     <div className="mt-10 flex flex-wrap items-center justify-center gap-4 px-8">
@@ -92,7 +70,6 @@ export default function ImportantLinks() {
         </CardContent>
         <CardFooter></CardFooter>
       </Card>
-      <Doughnut data={data} />
     </div>
   );
 }

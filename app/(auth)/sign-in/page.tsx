@@ -20,7 +20,7 @@ export default function SignInPage() {
     await login(provider);
   };
   return (
-    <div className="w-full flex items-center justify-center h-[80vh]">
+    <div className="w-full flex items-center justify-center h-[100vh] pb-32">
       <Card className="w-[400px] flex flex-col">
         <CardHeader className="pb-5">
           <CardTitle className="text-3xl">Login</CardTitle>

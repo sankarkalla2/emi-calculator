@@ -100,7 +100,7 @@ const Homeloan = ({ loanType }: HomeLoanProps) => {
     labels: ["Principal", "Total Interest"],
     datasets: [
       {
-        label: "Amount in USD",
+        label: "Amount in INR",
         data: [parseFloat(pricipleAmount as string) || 0, totalInterest || 0],
         backgroundColor: ["#42A5F5", "#FFA726"],
         hoverOffset: 4,
@@ -171,7 +171,7 @@ const Homeloan = ({ loanType }: HomeLoanProps) => {
         stacked: true,
         title: {
           display: true,
-          text: "Amount (USD)",
+          text: "Amount (INR)",
         },
       },
     },

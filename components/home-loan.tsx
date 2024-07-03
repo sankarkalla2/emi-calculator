@@ -93,17 +93,17 @@ const Homeloan = ({ loanType }: HomeLoanProps) => {
       : loanType === "Personal Loan"
       ? "#ff3d00"
       : "#00695c";
-  // const data = {
-  //   labels: ["Principal", "Total Interest"],
-  //   datasets: [
-  //     {
-  //       label: "Amount in Rs",
-  //       data: [parseFloat(pricipleAmount as string) || 0, totalInterest || 0],
-  //       backgroundColor: ["#42A5F5", "#FFA726"],
-  //       hoverOffset: 4,
-  //     },
-  //   ],
-  // };
+  const data = {
+    labels: ["Principal", "Total Interest"],
+    datasets: [
+      {
+        label: "Amount in Rs",
+        data: [parseFloat(pricipleAmount as string) || 0, totalInterest || 0],
+        backgroundColor: ["#42A5F5", "#FFA726"],
+        hoverOffset: 4,
+      },
+    ],
+  };
 
   const options: ChartOptions<"doughnut"> = {
     responsive: true,

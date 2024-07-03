@@ -1,3 +1,4 @@
+"use client"
 import LoanCalculator from "@/components/loan-calculator";
 import { Button } from "@/components/ui/button";
 
